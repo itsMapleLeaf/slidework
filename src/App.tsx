@@ -13,7 +13,7 @@ function App() {
   async function getSecret() {
     const token = await auth.getTokenSilently()
 
-    const result = await fetchJson(`/api/test`, {
+    const result = await fetchJson(`/api/timeline`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -27,8 +27,8 @@ function App() {
       <button onClick={auth.logIn}>log in</button>
       <button onClick={auth.logOut}>log out</button>
       <button onClick={getSecret}>get the secret</button>
-      <pre>{JSON.stringify(auth.user)}</pre>
-      <pre>{JSON.stringify(secret)}</pre>
+      <pre>{JSON.stringify(auth.user, undefined, 2)}</pre>
+      <pre>{JSON.stringify(secret, undefined, 2)}</pre>
     </main>
   )
 }
