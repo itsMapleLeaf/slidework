@@ -20,6 +20,7 @@ export function useAuth() {
         domain: process.env.REACT_APP_AUTH0_DOMAIN!,
         client_id: process.env.REACT_APP_AUTH0_CLIENT_ID!,
         redirect_uri: process.env.REACT_APP_AUTH_CALLBACK_URL,
+        audience: process.env.REACT_APP_AUTH0_AUDIENCE,
       })
 
       const params = new URLSearchParams(window.location.search)
@@ -46,5 +47,9 @@ export function useAuth() {
     if (client) client.logout()
   }
 
-  return { logIn, logOut, user }
+  async function getTokenSilently() {
+    if (client) return client.getTokenSilently()
+  }
+
+  return { logIn, logOut, getTokenSilently, user }
 }
