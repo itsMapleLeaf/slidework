@@ -22,7 +22,14 @@ export function useAuth() {
         redirect_uri: process.env.REACT_APP_AUTH_CALLBACK_URL,
       })
 
-      const user = await client.getUser()
+      const params = new URLSearchParams(window.location.search)
+      if (params.has("code")) {
+        await client.handleRedirectCallback()
+      }
+
+      const user = (await client.isAuthenticated())
+        ? await client.getUser()
+        : undefined
 
       setClient(client)
       setUser(user)
@@ -30,23 +37,6 @@ export function useAuth() {
 
     createClient()
   }, [])
-
-  useEffect(() => {
-    if (!client) return
-
-    const handleRedirect = async () => {
-      const params = new URLSearchParams(window.location.search)
-
-      if (params.has("code")) {
-        await client.handleRedirectCallback()
-        const user = await client.getUser()
-
-        setUser(user)
-      }
-    }
-
-    handleRedirect()
-  }, [client])
 
   function logIn() {
     if (client) client.loginWithRedirect()
