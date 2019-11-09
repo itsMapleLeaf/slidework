@@ -1,14 +1,7 @@
 import createAuth0Client from "@auth0/auth0-spa-js"
 import Auth0Client from "@auth0/auth0-spa-js/dist/typings/Auth0Client"
 import { useEffect, useState } from "react"
-
-export type AuthUser = {
-  name: string
-  nickname: string
-  picture: string
-  updated_at: string // ISO date
-  sub: string
-}
+import { AuthUser } from "./types"
 
 export function useAuth() {
   const [status, setStatus] = useState<"init" | "loading" | "loaded">("init")

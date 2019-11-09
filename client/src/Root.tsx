@@ -1,54 +1,9 @@
-import React, { useEffect } from "react"
-import { Route, useHistory } from "react-router-dom"
-import { AuthUser, useAuth } from "./auth"
-
-function AnonymousApp({ onLogIn }: { onLogIn: () => void }) {
-  return (
-    <>
-      <nav>
-        <button onClick={onLogIn}>log in</button>
-      </nav>
-      <main>hi, please log in</main>
-    </>
-  )
-}
-
-function AuthenticatedApp({
-  user,
-  onLogOut,
-}: {
-  user: AuthUser
-  onLogOut: () => void
-}) {
-  return (
-    <>
-      <nav>
-        <button onClick={onLogOut}>log out</button>
-      </nav>
-      <main>
-        <pre>{JSON.stringify(user, undefined, 2)}</pre>
-      </main>
-    </>
-  )
-}
-
-function AuthHandler({
-  onHandleAuthCallback,
-}: {
-  onHandleAuthCallback: () => void
-}) {
-  const history = useHistory()
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    if (params.has("code")) {
-      onHandleAuthCallback()
-      history.replace("/")
-    }
-  }, [history, onHandleAuthCallback])
-
-  return null
-}
+import React from "react"
+import { Route } from "react-router-dom"
+import AnonymousApp from "./app/AnonymousApp"
+import App from "./app/App"
+import AuthHandler from "./auth/AuthHandler"
+import { useAuth } from "./auth/useAuth"
 
 function Root() {
   const auth = useAuth()
@@ -65,7 +20,7 @@ function Root() {
         <>
           <Route exact path="/">
             {auth.user ? (
-              <AuthenticatedApp user={auth.user} onLogOut={auth.logOut} />
+              <App user={auth.user} onLogOut={auth.logOut} />
             ) : (
               <AnonymousApp onLogIn={auth.logIn} />
             )}
