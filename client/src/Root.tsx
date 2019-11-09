@@ -13,7 +13,7 @@ function Root() {
       return null
 
     case "loading":
-      return <p>Loading...</p>
+      return <p>authenticating...</p>
 
     case "loaded":
       return (
