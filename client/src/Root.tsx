@@ -20,7 +20,7 @@ function Root() {
         <>
           <Route exact path="/">
             {auth.user ? (
-              <App user={auth.user} onLogOut={auth.logOut} />
+              <App onLogOut={auth.logOut} />
             ) : (
               <AnonymousApp onLogIn={auth.logIn} />
             )}
