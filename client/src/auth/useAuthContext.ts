@@ -1,6 +1,6 @@
 import createAuth0Client from "@auth0/auth0-spa-js"
 import Auth0Client from "@auth0/auth0-spa-js/dist/typings/Auth0Client"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import createContextWrapper from "../common/createContextWrapper"
 import { AuthUser } from "./types"
 
@@ -32,38 +32,40 @@ function useAuth() {
     createClient()
   }, [])
 
-  function logIn() {
-    if (client) client.loginWithRedirect()
-  }
+  return useMemo(() => {
+    function logIn() {
+      if (client) client.loginWithRedirect()
+    }
 
-  function logOut() {
-    if (client) client.logout()
-  }
+    function logOut() {
+      if (client) client.logout()
+    }
 
-  async function getTokenSilently() {
-    if (client) return client.getTokenSilently()
-  }
+    async function getTokenSilently() {
+      if (client) return client.getTokenSilently()
+    }
 
-  async function handleRedirectCallback() {
-    if (!client || status === "loading") return
+    async function handleRedirectCallback() {
+      if (!client || status === "loading") return
 
-    setStatus("loading")
+      setStatus("loading")
 
-    await client.handleRedirectCallback()
-    const user = await client.getUser()
+      await client.handleRedirectCallback()
+      const user = await client.getUser()
 
-    setStatus("loaded")
-    setUser(user)
-  }
+      setStatus("loaded")
+      setUser(user)
+    }
 
-  return {
-    logIn,
-    logOut,
-    user,
-    status,
-    getTokenSilently,
-    handleRedirectCallback,
-  }
+    return {
+      logIn,
+      logOut,
+      user,
+      status,
+      getTokenSilently,
+      handleRedirectCallback,
+    }
+  }, [client, status, user])
 }
 
 export const useAuthContext = createContextWrapper(useAuth)
