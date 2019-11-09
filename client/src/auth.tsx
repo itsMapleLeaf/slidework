@@ -2,7 +2,7 @@ import createAuth0Client from "@auth0/auth0-spa-js"
 import Auth0Client from "@auth0/auth0-spa-js/dist/typings/Auth0Client"
 import { useEffect, useState } from "react"
 
-type AuthUser = {
+export type AuthUser = {
   name: string
   nickname: string
   picture: string
@@ -11,11 +11,14 @@ type AuthUser = {
 }
 
 export function useAuth() {
+  const [status, setStatus] = useState<"init" | "loading" | "loaded">("init")
   const [client, setClient] = useState<Auth0Client>()
   const [user, setUser] = useState<AuthUser>()
 
   useEffect(() => {
     const createClient = async () => {
+      setStatus("loading")
+
       const client = await createAuth0Client({
         domain: process.env.REACT_APP_AUTH0_DOMAIN!,
         client_id: process.env.REACT_APP_AUTH0_CLIENT_ID!,
@@ -23,17 +26,13 @@ export function useAuth() {
         audience: process.env.REACT_APP_AUTH0_AUDIENCE,
       })
 
-      const params = new URLSearchParams(window.location.search)
-      if (params.has("code")) {
-        await client.handleRedirectCallback()
-      }
-
       const user = (await client.isAuthenticated())
         ? await client.getUser()
         : undefined
 
       setClient(client)
       setUser(user)
+      setStatus("loaded")
     }
 
     createClient()
@@ -51,5 +50,24 @@ export function useAuth() {
     if (client) return client.getTokenSilently()
   }
 
-  return { logIn, logOut, getTokenSilently, user }
+  async function handleRedirectCallback() {
+    if (!client || status === "loading") return
+
+    setStatus("loading")
+
+    await client.handleRedirectCallback()
+    const user = await client.getUser()
+
+    setStatus("loaded")
+    setUser(user)
+  }
+
+  return {
+    logIn,
+    logOut,
+    user,
+    status,
+    getTokenSilently,
+    handleRedirectCallback,
+  }
 }
