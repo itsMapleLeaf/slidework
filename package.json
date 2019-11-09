@@ -1,0 +1,15 @@
+{
+  "name": "slidework",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "kingdaro <kingdarodev@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "api",
+    "client"
+  ],
+  "devDependency": {
+    "prettier": "^1.19.1"
+  }
+}

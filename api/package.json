@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "start": "cross-env NODE_ENV=production ts-node src/index.ts",
     "dev": "ts-node-dev --no-notify --transpile-only src/index.ts"
