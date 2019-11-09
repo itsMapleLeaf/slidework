@@ -1,11 +1,12 @@
 // @ts-check
 import { ManagementClient } from "auth0"
 import dotenv from "dotenv"
-import express from "express"
+import express, { NextFunction, Request, Response } from "express"
 import jwt from "express-jwt"
 import jwksRsa from "jwks-rsa"
 import path from "path"
 import Twit from "twit"
+import { HttpError } from "./http-error"
 
 dotenv.config({ path: path.join(__dirname, `../.env.local`) })
 
@@ -23,7 +24,7 @@ const checkJwt = jwt({
     jwksUri: `https://${process.env.API_AUTH0_DOMAIN}/.well-known/jwks.json`,
   }),
 
-  audience: process.env.REACT_APP_AUTH0_AUDIENCE,
+  audience: process.env.API_AUTH0_AUDIENCE,
   issuer: `https://${process.env.API_AUTH0_DOMAIN}/`,
   algorithm: ["RS256"],
 })
@@ -32,14 +33,18 @@ const app = express()
 
 app.get("/api/timeline", checkJwt, async (req, res, next) => {
   try {
-    // @ts-ignore
-    const userId = req.user.sub
+    const userId = req.user?.sub
+    if (!userId) {
+      throw new HttpError('No userId found in JWT', 400)
+    }
+
     const user = await authClient.getUser({ id: userId })
 
-    // @ts-ignore
-    const accessToken = user.identities[0].access_token
-    // @ts-ignore
-    const accessTokenSecret = user.identities[0].access_token_secret
+    const accessToken = user.identities?.[0].access_token
+    const accessTokenSecret = user.identities?.[0].access_token_secret
+    if (!accessToken || !accessTokenSecret) {
+      throw new HttpError('No access token or secret found in auth0 user', 500)
+    }
 
     const twitterClient = new Twit({
       consumer_key: process.env.TWITTER_CONSUMER_KEY!,
@@ -55,6 +60,14 @@ app.get("/api/timeline", checkJwt, async (req, res, next) => {
     res.send({ data })
   } catch (error) {
     next(error)
+  }
+})
+
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof HttpError) {
+    res.send({error:{message:err.message,status:err.status}})
+  } else {
+    res.send({ error: {message:"An internal error occurred"} })
   }
 })
 
