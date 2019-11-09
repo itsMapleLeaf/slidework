@@ -3,10 +3,10 @@ import { Route } from "react-router-dom"
 import AnonymousApp from "./app/AnonymousApp"
 import App from "./app/App"
 import AuthHandler from "./auth/AuthHandler"
-import { useAuth } from "./auth/useAuth"
+import { useAuthContext } from "./auth/useAuthContext"
 
 function Root() {
-  const auth = useAuth()
+  const auth = useAuthContext()
 
   switch (auth.status) {
     case "init":
@@ -32,30 +32,6 @@ function Root() {
         </>
       )
   }
-
-  // const [secret, setSecret] = useState<any>()
-
-  // async function getSecret() {
-  //   const token = await auth.getTokenSilently()
-
-  //   const result = await fetchJson(`/api/timeline`, {
-  //     headers: {
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   })
-
-  //   setSecret(result)
-  // }
-
-  // return (
-  //   <main>
-  //     <button onClick={auth.logIn}>log in</button>
-  //     <button onClick={auth.logOut}>log out</button>
-  //     <button onClick={getSecret}>get the secret</button>
-  //     <pre>{JSON.stringify(auth.user, undefined, 2)}</pre>
-  //     <pre>{JSON.stringify(secret, undefined, 2)}</pre>
-  //   </main>
-  // )
 }
 
 export default Root

@@ -18,7 +18,10 @@ function createContextWrapper<R, I extends object>(hook: (init: I) => R) {
     return context
   }
 
-  return [Provider, useWrappedContext] as const
+  useWrappedContext.Provider = Provider
+  useWrappedContext.Context = Context
+
+  return useWrappedContext
 }
 
 export default createContextWrapper

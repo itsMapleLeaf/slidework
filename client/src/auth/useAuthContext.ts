@@ -1,9 +1,10 @@
 import createAuth0Client from "@auth0/auth0-spa-js"
 import Auth0Client from "@auth0/auth0-spa-js/dist/typings/Auth0Client"
 import { useEffect, useState } from "react"
+import createContextWrapper from "../common/createContextWrapper"
 import { AuthUser } from "./types"
 
-export function useAuth() {
+function useAuth() {
   const [status, setStatus] = useState<"init" | "loading" | "loaded">("init")
   const [client, setClient] = useState<Auth0Client>()
   const [user, setUser] = useState<AuthUser>()
@@ -64,3 +65,5 @@ export function useAuth() {
     handleRedirectCallback,
   }
 }
+
+export const useAuthContext = createContextWrapper(useAuth)
