@@ -1,23 +1,18 @@
-import { useMemo } from "react"
+import { useCallback } from "react"
+import useSWR from "swr"
 import { useAuthContext } from "../auth/useAuthContext"
 import fetchJson from "./fetchJson"
 
-export function useApi() {
+export function useTimeline() {
   const auth = useAuthContext()
 
-  return useMemo(() => {
-    async function getTimeline() {
-      const token = await auth.getTokenSilently()
+  const fetchWithToken = useCallback(
+    (url: string) =>
+      fetchJson(url, { headers: { Authorization: `Bearer ${auth.token}` } }),
+    [auth.token],
+  )
 
-      const result = await fetchJson(`/api/timeline`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+  const { data } = useSWR(`/api/timeline`, fetchWithToken, { suspense: true })
 
-      return result
-    }
-
-    return { getTimeline }
-  }, [auth])
+  return data
 }

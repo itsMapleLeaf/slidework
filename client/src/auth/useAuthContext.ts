@@ -8,6 +8,7 @@ function useAuth() {
   const [status, setStatus] = useState<"init" | "loading" | "loaded">("init")
   const [client, setClient] = useState<Auth0Client>()
   const [user, setUser] = useState<AuthUser>()
+  const [token, setToken] = useState<string>()
 
   useEffect(() => {
     const createClient = async () => {
@@ -20,12 +21,15 @@ function useAuth() {
         audience: process.env.REACT_APP_AUTH0_AUDIENCE,
       })
 
-      const user = (await client.isAuthenticated())
-        ? await client.getUser()
-        : undefined
+      const isAuthenticated = await client.isAuthenticated()
+
+      const [user, token] = isAuthenticated
+        ? await Promise.all([client.getUser(), client.getTokenSilently()])
+        : []
 
       setClient(client)
       setUser(user)
+      setToken(token)
       setStatus("loaded")
     }
 
@@ -39,10 +43,6 @@ function useAuth() {
 
     function logOut() {
       if (client) client.logout()
-    }
-
-    async function getTokenSilently() {
-      if (client) return client.getTokenSilently()
     }
 
     async function handleRedirectCallback() {
@@ -61,11 +61,11 @@ function useAuth() {
       logIn,
       logOut,
       user,
+      token,
       status,
-      getTokenSilently,
       handleRedirectCallback,
     }
-  }, [client, status, user])
+  }, [client, status, token, user])
 }
 
 export const useAuthContext = createContextWrapper(useAuth)

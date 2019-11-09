@@ -1,30 +1,26 @@
-import React, { useEffect, useState } from "react"
-import { useApi } from "../http/useApi"
+import React, { Suspense } from "react"
+import { useTimeline } from "../http/useApi"
 
 type Props = {
   onLogOut: () => void
 }
 
 export default function App({ onLogOut }: Props) {
-  const [data, setData] = useState<any>()
-  const api = useApi()
-
-  useEffect(() => {
-    api.getTimeline().then(setData)
-  }, [api])
-
   return (
     <>
       <nav>
         <button onClick={onLogOut}>log out</button>
       </nav>
       <main>
-        {data ? (
-          <pre>{JSON.stringify(data, undefined, 2)}</pre>
-        ) : (
-          <p>Loading...</p>
-        )}
+        <Suspense fallback={<p>Loading timeline...</p>}>
+          <Timeline />
+        </Suspense>
       </main>
     </>
   )
+}
+
+function Timeline() {
+  const data = useTimeline()
+  return <pre>{JSON.stringify(data, undefined, 2)}</pre>
 }
