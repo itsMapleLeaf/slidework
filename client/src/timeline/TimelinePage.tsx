@@ -65,7 +65,8 @@ export default function TimelinePage() {
     [focusedId],
   )
 
-  useWindowEvent("scroll", updateFocusedId, scrollEventOptions)
+  useWindowEvent("scroll", updateFocusedId, passiveEventOptions)
+  useWindowEvent("resize", updateFocusedId, passiveEventOptions)
   useWindowEvent("keydown", handleKeyboardEvent)
 
   return (
@@ -89,4 +90,4 @@ const Main = styled.main`
   max-width: 1200px;
 `
 
-const scrollEventOptions = { passive: true }
+const passiveEventOptions = { passive: true }
