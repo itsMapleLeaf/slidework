@@ -24,4 +24,10 @@ function createContextWrapper<R, I extends object>(hook: (init: I) => R) {
   return useWrappedContext
 }
 
+createContextWrapper.simple = function createSimpleContextWrapper<
+  T extends object
+>() {
+  return createContextWrapper((props: T) => props)
+}
+
 export default createContextWrapper
