@@ -35,7 +35,7 @@ app.get("/api/timeline", checkJwt, async (req, res, next) => {
   try {
     const userId = req.user?.sub
     if (!userId) {
-      throw new HttpError('No userId found in JWT', 400)
+      throw new HttpError("No userId found in JWT", 400)
     }
 
     const user = await authClient.getUser({ id: userId })
@@ -43,7 +43,7 @@ app.get("/api/timeline", checkJwt, async (req, res, next) => {
     const accessToken = user.identities?.[0].access_token
     const accessTokenSecret = user.identities?.[0].access_token_secret
     if (!accessToken || !accessTokenSecret) {
-      throw new HttpError('No access token or secret found in auth0 user', 500)
+      throw new HttpError("No access token or secret found in auth0 user", 500)
     }
 
     const twitterClient = new Twit({
@@ -65,10 +65,11 @@ app.get("/api/timeline", checkJwt, async (req, res, next) => {
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err instanceof HttpError) {
-    res.send({error:{message:err.message,status:err.status}})
+    res.send({ error: { message: err.message, status: err.status } })
   } else {
-    res.send({ error: {message:"An internal error occurred"} })
+    res.send({ error: { message: "An internal error occurred" } })
   }
+  console.error(err)
 })
 
 app.listen(3001, () => console.log("API listening on 3001"))
