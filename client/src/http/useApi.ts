@@ -1,18 +1,21 @@
-import { useCallback } from "react"
-import useSWR from "swr"
+import { useEffect, useState } from "react"
 import { useAuthContext } from "../auth/useAuthContext"
-import fetchJson from "./fetchJson"
+import FetchResource from "./FetchResource"
 
 export function useTimeline() {
   const auth = useAuthContext()
   const token = auth.readToken()
 
-  const fetchWithToken = useCallback(
-    (url: string) =>
-      fetchJson(url, { headers: { Authorization: `Bearer ${token}` } }),
-    [token],
-  )
+  const [resource, setResource] = useState<FetchResource>()
 
-  const { data } = useSWR(`/api/timeline`, fetchWithToken, { suspense: true })
-  return data
+  useEffect(() => {
+    if (token) {
+      const options = {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+      setResource(new FetchResource(`/api/timeline`, options))
+    }
+  }, [token])
+
+  return resource?.read()
 }
