@@ -1,37 +1,30 @@
-import React from "react"
-import { Route } from "react-router-dom"
+import React, { useState } from "react"
 import AnonymousApp from "./app/AnonymousApp"
 import App from "./app/App"
-import AuthHandler from "./auth/AuthHandler"
-import { useAuthContext } from "./auth/useAuthContext"
+import AuthResource from "./auth/AuthResource"
 
-function Root() {
-  const auth = useAuthContext()
+type Props = {
+  authResource: AuthResource
+}
 
-  switch (auth.status) {
-    case "init":
-      return null
+function Root({ authResource: initialAuthResource }: Props) {
+  const [authResource, setAuthResource] = useState(initialAuthResource)
 
-    case "loading":
-      return <p>authenticating...</p>
+  const user = authResource.readUser()
 
-    case "loaded":
-      return (
-        <>
-          <Route exact path="/">
-            {auth.user ? (
-              <App onLogOut={auth.logOut} />
-            ) : (
-              <AnonymousApp onLogIn={auth.logIn} />
-            )}
-          </Route>
-
-          <Route exact path="/auth">
-            <AuthHandler onHandleAuthCallback={auth.handleRedirectCallback} />
-          </Route>
-        </>
-      )
+  const logIn = () => {
+    setAuthResource(new AuthResource({ logIn: true }))
   }
+
+  return (
+    <>
+      {user ? (
+        <App onLogOut={authResource.logOut} />
+      ) : (
+        <AnonymousApp onLogIn={logIn} />
+      )}
+    </>
+  )
 }
 
 export default Root
