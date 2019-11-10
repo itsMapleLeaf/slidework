@@ -1,4 +1,3 @@
-// @ts-check
 import { ManagementClient } from "auth0"
 import dotenv from "dotenv"
 import express, { NextFunction, Request, Response } from "express"
