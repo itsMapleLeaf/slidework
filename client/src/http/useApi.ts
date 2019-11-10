@@ -2,8 +2,21 @@ import { useEffect, useState } from "react"
 import { useRequiredAuthContext } from "../auth/authContext"
 import FetchResource from "./FetchResource"
 
+type TimelineApiResponse = {
+  data: {
+    media: TimelineImage[]
+    cursor?: string
+  }
+}
+
+type TimelineImage = {
+  id: number
+  url: string
+  tweetUrl: string
+}
+
 export function useTimeline() {
-  const [resource, setResource] = useState<FetchResource>()
+  const [resource, setResource] = useState<FetchResource<TimelineApiResponse>>()
   const { token } = useRequiredAuthContext()
 
   useEffect(() => {
@@ -15,5 +28,5 @@ export function useTimeline() {
     }
   }, [token])
 
-  return resource?.read()
+  return resource ? resource.read().data : { media: [] }
 }
