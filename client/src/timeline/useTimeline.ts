@@ -1,28 +1,7 @@
 import { useEffect, useState, useTransition } from "react"
 import { useRequiredAuthContext } from "../auth/authContext"
 import FetchResource from "../http/FetchResource"
-
-type TimelineApiResponse = {
-  data: {
-    media: TimelineImage[]
-    cursor?: number
-  }
-}
-
-type TimelineImage = {
-  id: number
-  url: string
-  tweet: {
-    url: string
-    content: string
-    date: string
-  }
-  user: {
-    avatarUrl: string
-    username: string
-    displayName: string
-  }
-}
+import { TimelineApiResponse } from "./types"
 
 export function useTimeline(cursor?: number) {
   const [resource, setResource] = useState<FetchResource<TimelineApiResponse>>()
