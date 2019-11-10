@@ -1,23 +1,36 @@
-import React, { Suspense, useState } from "react"
+import React, { Suspense, useEffect, useState } from "react"
 import ErrorBoundary from "../app/ErrorBoundary"
-import { styled } from "../ui/styled"
+import { css, styled } from "../ui/styled"
 import { theme } from "../ui/theme"
 import { useTimeline } from "./useTimeline"
 
 type Props = {
   cursor?: number
+  focusedId?: number
+  onDataLoaded?: () => void
 }
 
-export default function Timeline({ cursor }: Props) {
+export default function Timeline({ cursor, focusedId, onDataLoaded }: Props) {
   const data = useTimeline(cursor)
   const [renderNext, setRenderNext] = useState(false)
+
+  useEffect(() => {
+    if (data.media.length > 0) {
+      onDataLoaded?.()
+    }
+  }, [data.media.length, onDataLoaded])
 
   return (
     <>
       <ImageList>
         {data.media.map((media) => (
-          <ImageListItem key={media.id}>
-            <Image src={media.url} alt="" role="presentation" />
+          <ImageListItem key={media.id} data-media-id={media.id}>
+            <Image
+              src={media.url}
+              alt=""
+              role="presentation"
+              shaded={focusedId !== media.id}
+            />
           </ImageListItem>
         ))}
       </ImageList>
@@ -25,7 +38,7 @@ export default function Timeline({ cursor }: Props) {
       {renderNext ? (
         <Suspense fallback={<p>loading next page...</p>}>
           <ErrorBoundary placeholder={<p>failed to load page :(</p>}>
-            <Timeline cursor={data.cursor} />
+            <Timeline cursor={data.cursor} focusedId={focusedId} />
           </ErrorBoundary>
         </Suspense>
       ) : data.cursor ? (
@@ -48,13 +61,23 @@ const ImageListItem = styled.li`
   max-height: min-content;
   width: 100%;
   margin-bottom: ${theme.spacing.normal};
+  filter: drop-shadow(${theme.shadows.normal});
+  overflow: hidden;
 `
 
-const Image = styled.img`
+const shadedStyle = css`
+  filter: brightness(15%);
+  transform: scale(1.05);
+`
+
+const Image = styled.img<{ shaded?: boolean }>`
   display: block;
   width: 100%;
   max-height: 100%;
   margin: 0 auto;
-  filter: drop-shadow(${theme.shadows.normal});
   object-fit: contain;
+
+  transition: ${theme.transition.normal};
+  transition-property: filter, transform;
+  ${(props) => props.shaded && shadedStyle}
 `

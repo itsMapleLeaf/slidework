@@ -44,7 +44,16 @@ export class TwitterClient {
         .map((media) => ({
           id: media.id,
           url: media.media_url_https,
-          tweetUrl: media.expanded_url,
+          tweet: {
+            url: media.expanded_url,
+            content: tweet.text || "",
+            date: tweet.created_at,
+          },
+          user: {
+            avatarUrl: tweet.user.profile_image_url_https,
+            username: tweet.user.screen_name,
+            displayName: tweet.user.name,
+          },
         }))
 
       media.push(...extractedMedia)

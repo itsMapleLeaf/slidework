@@ -12,7 +12,16 @@ type TimelineApiResponse = {
 type TimelineImage = {
   id: number
   url: string
-  tweetUrl: string
+  tweet: {
+    url: string
+    content: string
+    date: string
+  }
+  user: {
+    avatarUrl: string
+    username: string
+    displayName: string
+  }
 }
 
 export function useTimeline(cursor?: number) {

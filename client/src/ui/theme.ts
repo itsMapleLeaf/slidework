@@ -18,6 +18,9 @@ export const theme = {
   spacing: {
     normal: "16px",
   },
+  transition: {
+    normal: "0.2s",
+  },
 }
 
 export type AppTheme = typeof theme
