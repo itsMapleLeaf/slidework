@@ -4,6 +4,7 @@ import { useRequiredAuthContext } from "../auth/authContext"
 import ExternalLink from "../dom/ExternalLink"
 import Anchor from "../ui/Anchor"
 import Button from "../ui/Button"
+import { frostedPanelStyle } from "../ui/mixins"
 import { styled } from "../ui/styled"
 import { theme } from "../ui/theme"
 import Timeline from "./Timeline"
@@ -43,22 +44,20 @@ const Main = styled.main`
 `
 
 const Header = styled.header`
+  ${frostedPanelStyle};
+
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  height: ${headerHeight};
-  z-index: 1;
-  padding: 0 ${theme.spacing.small};
-
-  background-color: ${theme.colors.semiblack};
-  backdrop-filter: blur(4px);
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  box-shadow: ${theme.shadows.normal};
+  padding: 0 ${theme.spacing.small};
+  height: ${headerHeight};
+  z-index: 1;
 `
 
 const UserInfo = styled(Anchor.withComponent(ExternalLink))`

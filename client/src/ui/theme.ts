@@ -11,7 +11,7 @@ export const theme = {
     semiblack: `rgba(0, 0, 0, 0.5)`,
   },
   shadows: {
-    normal: `0px 3px 6px rgba(0, 0, 0, 0.2)`,
+    normal: `0 0 6px rgba(0, 0, 0, 0.2)`,
   },
   spacing: {
     large: "32px",
