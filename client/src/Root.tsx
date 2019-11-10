@@ -6,15 +6,7 @@ import { useAuthContext } from "./auth/useAuthContext"
 function Root() {
   const auth = useAuthContext()
   const user = auth.readUser()
-  return (
-    <>
-      {user ? (
-        <App onLogOut={auth.logOut} />
-      ) : (
-        <AnonymousApp onLogIn={auth.logIn} />
-      )}
-    </>
-  )
+  return user ? <App /> : <AnonymousApp />
 }
 
 export default Root

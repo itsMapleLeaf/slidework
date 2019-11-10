@@ -1,16 +1,14 @@
 import React, { Suspense } from "react"
+import { useAuthContext } from "../auth/useAuthContext"
 import { useTimeline } from "../http/useApi"
 import ErrorBoundary from "./ErrorBoundary"
 
-type Props = {
-  onLogOut: () => void
-}
-
-export default function App({ onLogOut }: Props) {
+export default function App() {
+  const auth = useAuthContext()
   return (
     <>
       <nav>
-        <button onClick={onLogOut}>log out</button>
+        <button onClick={auth.logOut}>log out</button>
       </nav>
       <main>
         <Suspense fallback={<p>loading timeline...</p>}>

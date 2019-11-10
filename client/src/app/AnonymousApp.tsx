@@ -1,14 +1,14 @@
 import React from "react"
+import { useAuthContext } from "../auth/useAuthContext"
 
-type Props = {
-  onLogIn: () => void
-}
-
-export default function AnonymousApp({ onLogIn }: Props) {
+export default function AnonymousApp() {
+  const auth = useAuthContext()
   return (
     <>
       <nav>
-        <button onClick={onLogIn}>log in</button>
+        <button onClick={auth.logIn} disabled={auth.isPending}>
+          {auth.isPending ? "logging in..." : "log in"}
+        </button>
       </nav>
       <main>
         <p>hi, please log in</p>
