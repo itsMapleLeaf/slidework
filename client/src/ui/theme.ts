@@ -19,7 +19,7 @@ export const theme = {
     normal: "16px",
   },
   transition: {
-    normal: "0.2s",
+    normal: "0.3s",
   },
 }
 
