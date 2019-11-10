@@ -4,7 +4,7 @@ import { theme } from "./theme"
 
 const Button = styled.button`
   padding: ${theme.spacing.xsmall} ${theme.spacing.small};
-  border-radius: 4px;
+  border-radius: 5px;
   background-color: rgba(255, 255, 255, 0.12);
   cursor: pointer;
 

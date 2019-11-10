@@ -19,7 +19,9 @@ export default function TimelinePage() {
           <Avatar src={user.picture} />
           <UserName>{user.nickname}</UserName>
         </UserInfo>
-        <Button onClick={logOut}>log out</Button>
+        <Button css={{ flexShrink: 0 }} onClick={logOut}>
+          log out
+        </Button>
       </Header>
 
       <Main ref={containerRef}>
@@ -54,6 +56,7 @@ const Header = styled.header`
 
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
   box-shadow: ${theme.shadows.normal};
 `
@@ -61,7 +64,6 @@ const Header = styled.header`
 const UserInfo = styled(Anchor.withComponent(ExternalLink))`
   display: flex;
   align-items: center;
-  flex: 1;
 `
 
 const Avatar = styled.img`
