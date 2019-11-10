@@ -14,7 +14,7 @@ const style = css`
   }
 
   :root {
-    background-color: ${theme.colors.background3};
+    background-color: ${theme.colors.background};
     font: 16px Rubik, sans-serif;
     color: ${theme.colors.text};
   }
