@@ -1,6 +1,6 @@
 import { ManagementClient } from "auth0"
 import { RequestHandler } from "express"
-import Twit from "twit"
+import { CachedTwitterClient } from "./cached-twitter-client"
 import env from "./env"
 import { HttpError } from "./http-error"
 
@@ -25,7 +25,7 @@ export const handleTimeline: RequestHandler = async (req, res, next) => {
       throw new HttpError("No access token or secret found in auth0 user", 500)
     }
 
-    const twitterClient = new Twit({
+    const twitterClient = new CachedTwitterClient({
       consumer_key: env.twitter.consumerKey,
       consumer_secret: env.twitter.consumerApiSecret,
       access_token: accessToken,
@@ -36,8 +36,8 @@ export const handleTimeline: RequestHandler = async (req, res, next) => {
     let cursor: string | undefined = req.params.lastId
 
     while (media.length < 20) {
-      const { data } = await twitterClient.get("statuses/home_timeline", {
-        count: 100,
+      const data = await twitterClient.get("statuses/home_timeline", {
+        count: 200,
         exclude_replies: true,
         max_id: cursor,
       })
