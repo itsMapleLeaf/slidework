@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "slidework",
+  "name": "slidework - an artwork-focused twitter timeline ✨",
   "icons": [
     {
       "src": "favicon.ico",
