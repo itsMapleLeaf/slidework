@@ -1,6 +1,6 @@
 import { ManagementClient } from "auth0"
 import { RequestHandler } from "express"
-import { CachedTwitterClient } from "./cached-twitter-client"
+import { TwitterClient } from "./twitter-client"
 import env from "./env"
 import { HttpError } from "./http-error"
 
@@ -25,7 +25,7 @@ export const handleTimeline: RequestHandler = async (req, res, next) => {
       throw new HttpError("No access token or secret found in auth0 user", 500)
     }
 
-    const twitterClient = new CachedTwitterClient({
+    const twitterClient = new TwitterClient({
       consumer_key: env.twitter.consumerKey,
       consumer_secret: env.twitter.consumerApiSecret,
       access_token: accessToken,
@@ -33,36 +33,15 @@ export const handleTimeline: RequestHandler = async (req, res, next) => {
     })
 
     const media: unknown[] = []
-    let cursor: string | undefined = req.params.lastId
+    let lastTweetId = req.params.cursor as string | undefined
 
     while (media.length < 20) {
-      const data = await twitterClient.get("statuses/home_timeline", {
-        count: 200,
-        exclude_replies: true,
-        max_id: cursor,
-      })
-
-      const tweets = data as any[]
-      if (tweets.length === 0) break
-
-      for (const tweet of tweets) {
-        const originalMedia: any[] = tweet.entities?.media || []
-
-        const extractedMedia = originalMedia
-          .filter((media) => media.type === "photo")
-          .map((media) => ({
-            id: media.id,
-            url: media.media_url_https,
-            tweetUrl: media.expanded_url,
-          }))
-
-        media.push(...extractedMedia)
-      }
-
-      cursor = tweets[tweets.length - 1].id
+      const result = await twitterClient.getMedia(lastTweetId)
+      media.push(...result.media)
+      lastTweetId = result.lastTweetId
     }
 
-    res.send({ data: { media, cursor } })
+    res.send({ data: { media, cursor: lastTweetId } })
   } catch (error) {
     next(error)
   }
