@@ -16,13 +16,15 @@ export default function TimelinePage() {
 
     const focalPoint = window.innerHeight / 2 + window.scrollY
 
-    const focusedElement = [...images].find((image) => {
-      return (
-        image instanceof HTMLElement &&
-        focalPoint > image.offsetTop &&
-        focalPoint < image.offsetTop + image.clientHeight
-      )
-    })
+    const isScrolledOn = (image: Element) =>
+      image instanceof HTMLElement &&
+      focalPoint > image.offsetTop &&
+      focalPoint < image.offsetTop + image.clientHeight
+
+    const focusedElement =
+      window.scrollY < 50
+        ? images[0]
+        : [...images].find(isScrolledOn) || images[0]
 
     const id =
       focusedElement instanceof HTMLElement
