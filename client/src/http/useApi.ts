@@ -5,14 +5,14 @@ import fetchJson from "./fetchJson"
 
 export function useTimeline() {
   const auth = useAuthContext()
+  const token = auth.readToken()
 
   const fetchWithToken = useCallback(
     (url: string) =>
-      fetchJson(url, { headers: { Authorization: `Bearer ${auth.token}` } }),
-    [auth.token],
+      fetchJson(url, { headers: { Authorization: `Bearer ${token}` } }),
+    [token],
   )
 
   const { data } = useSWR(`/api/timeline`, fetchWithToken, { suspense: true })
-
   return data
 }

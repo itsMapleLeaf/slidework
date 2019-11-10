@@ -1,5 +1,6 @@
-import React from "react"
+import React, { Suspense } from "react"
 import { useTimeline } from "../http/useApi"
+import ErrorBoundary from "./ErrorBoundary"
 
 type Props = {
   onLogOut: () => void
@@ -12,11 +13,11 @@ export default function App({ onLogOut }: Props) {
         <button onClick={onLogOut}>log out</button>
       </nav>
       <main>
-        {/* <Suspense fallback={<p>loading timeline...</p>}>
+        <Suspense fallback={<p>loading timeline...</p>}>
           <ErrorBoundary placeholder={<p>could not load timeline :(</p>}>
             <Timeline />
           </ErrorBoundary>
-        </Suspense> */}
+        </Suspense>
       </main>
     </>
   )

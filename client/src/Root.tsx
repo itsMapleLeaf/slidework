@@ -1,27 +1,17 @@
-import React, { useState } from "react"
+import React from "react"
 import AnonymousApp from "./app/AnonymousApp"
 import App from "./app/App"
-import AuthResource from "./auth/AuthResource"
+import { useAuthContext } from "./auth/useAuthContext"
 
-type Props = {
-  authResource: AuthResource
-}
-
-function Root({ authResource: initialAuthResource }: Props) {
-  const [authResource, setAuthResource] = useState(initialAuthResource)
-
-  const user = authResource.readUser()
-
-  const logIn = () => {
-    setAuthResource(new AuthResource({ logIn: true }))
-  }
-
+function Root() {
+  const auth = useAuthContext()
+  const user = auth.readUser()
   return (
     <>
       {user ? (
-        <App onLogOut={authResource.logOut} />
+        <App onLogOut={auth.logOut} />
       ) : (
-        <AnonymousApp onLogIn={logIn} />
+        <AnonymousApp onLogIn={auth.logIn} />
       )}
     </>
   )
