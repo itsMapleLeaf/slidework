@@ -13,7 +13,7 @@ export default function useAuth(initialResource: AuthResource) {
       logOut: resource.logOut,
       logIn: () => {
         startTransition(() => {
-          setResource(new AuthResource({ logIn: true }))
+          setResource(AuthResource.forLogin())
         })
       },
     }),

@@ -8,7 +8,7 @@ import Root from "./Root"
 
 const root = ReactDOM.createRoot(document.getElementById("root")!)
 
-const authResource = new AuthResource()
+const authResource = AuthResource.forAppInit()
 
 function renderApp() {
   root.render(

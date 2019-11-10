@@ -17,8 +17,16 @@ export default class AuthResource {
   private client?: Auth0Client
   private promise?: Promise<unknown>
 
-  constructor(options: InitOptions = {}) {
+  private constructor(options: InitOptions = {}) {
     this.promise = this.init(options)
+  }
+
+  static forAppInit() {
+    return new AuthResource()
+  }
+
+  static forLogin() {
+    return new AuthResource({ logIn: true })
   }
 
   logOut = () => {
