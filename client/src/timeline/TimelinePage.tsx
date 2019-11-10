@@ -1,6 +1,6 @@
 import React, { Suspense } from "react"
+import ErrorBoundary from "../app/ErrorBoundary"
 import { useRequiredAuthContext } from "../auth/authContext"
-import ErrorBoundary from "./ErrorBoundary"
 import Timeline from "./Timeline"
 
 export default function TimelinePage() {

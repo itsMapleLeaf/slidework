@@ -1,6 +1,6 @@
 import React, { Suspense, useState } from "react"
-import { useTimeline } from "../http/useTimeline"
-import ErrorBoundary from "./ErrorBoundary"
+import ErrorBoundary from "../app/ErrorBoundary"
+import { useTimeline } from "./useTimeline"
 
 type Props = {
   cursor?: number
@@ -12,17 +12,15 @@ export default function Timeline({ cursor }: Props) {
 
   return (
     <>
-      <section>
-        {data.media.map((media) => (
-          <img
-            key={media.id}
-            src={media.url}
-            alt=""
-            role="presentation"
-            width={100}
-          />
-        ))}
-      </section>
+      {data.media.map((media) => (
+        <img
+          key={media.id}
+          src={media.url}
+          alt=""
+          role="presentation"
+          width={100}
+        />
+      ))}
 
       {renderNext ? (
         <Suspense fallback={<p>loading next page...</p>}>
@@ -31,7 +29,9 @@ export default function Timeline({ cursor }: Props) {
           </ErrorBoundary>
         </Suspense>
       ) : data.cursor ? (
-        <button onClick={() => setRenderNext(true)}>load more</button>
+        <footer>
+          <button onClick={() => setRenderNext(true)}>load more</button>
+        </footer>
       ) : null}
     </>
   )

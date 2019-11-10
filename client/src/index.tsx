@@ -5,9 +5,9 @@ import ReactDOM from "react-dom"
 import { BrowserRouter } from "react-router-dom"
 import ErrorBoundary from "./app/ErrorBoundary"
 import LandingPage from "./app/LandingPage"
-import TimelinePage from "./app/TimelinePage"
 import AuthResource from "./auth/AuthResource"
 import AuthRoot from "./auth/AuthRoot"
+import TimelinePage from "./timeline/TimelinePage"
 
 const authResource = new AuthResource()
 

@@ -1,6 +1,6 @@
 import { useEffect, useState, useTransition } from "react"
 import { useRequiredAuthContext } from "../auth/authContext"
-import FetchResource from "./FetchResource"
+import FetchResource from "../http/FetchResource"
 
 type TimelineApiResponse = {
   data: {
