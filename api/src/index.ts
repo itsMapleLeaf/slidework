@@ -9,5 +9,6 @@ dotenv.config({ path: path.join(__dirname, `../.env.local`) })
 
 const app = express()
 app.get("/api/timeline", checkJwt, handleTimeline)
+app.use(express.static(path.join(__dirname, `../../client/build`)))
 app.use(handleError)
 app.listen(3001, () => console.log("API listening on 3001"))

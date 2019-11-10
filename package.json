@@ -8,8 +8,7 @@
   "scripts": {
     "dev": "wsrun dev",
     "build": "wsrun --exclude-missing build",
-    "start": "wsrun start",
-    "heroku-postbuild": "yarn build"
+    "start": "wsrun --exclude-missing start"
   },
   "workspaces": [
     "api",
