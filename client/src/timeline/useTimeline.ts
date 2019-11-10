@@ -38,7 +38,12 @@ export function useTimeline(cursor?: number) {
       const params = cursor ? `?cursor=${cursor}` : ``
 
       startTransition(() => {
-        setResource(new FetchResource(`/api/timeline${params}`, options))
+        setResource(
+          new FetchResource(
+            `${process.env.REACT_APP_API_ROOT}/api/timeline${params}`,
+            options,
+          ),
+        )
       })
     }
   }, [cursor, startTransition, token])
