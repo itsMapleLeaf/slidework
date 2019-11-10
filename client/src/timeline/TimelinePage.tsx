@@ -25,7 +25,7 @@ export default function TimelinePage() {
     const isScrolledOn = (image: Element) =>
       image instanceof HTMLElement &&
       focalPoint > image.offsetTop &&
-      focalPoint <= image.offsetTop + image.clientHeight + 16 // make the areas overlap so we can't have an image not selected
+      focalPoint <= image.offsetTop + image.clientHeight + 16 // make the areas overlap so we always have an image selected
 
     const focusedElement =
       window.scrollY < 50 ? images[0] : images.find(isScrolledOn) || images[0]
