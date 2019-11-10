@@ -25,7 +25,7 @@ export default class AuthResource {
     this.client?.logout()
   }
 
-  readState = () => {
+  read = () => {
     switch (this.state.type) {
       case "loading":
         throw this.promise

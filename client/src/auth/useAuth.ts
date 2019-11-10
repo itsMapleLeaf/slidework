@@ -4,7 +4,7 @@ import AuthResource from "./AuthResource"
 export default function useAuth(initialResource: AuthResource) {
   const [resource, setResource] = useState(initialResource)
   const [startTransition, isPending] = useTransition()
-  const state = resource.readState()
+  const state = resource.read()
 
   return useMemo(
     () => ({
