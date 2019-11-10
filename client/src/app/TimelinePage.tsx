@@ -23,5 +23,17 @@ export default function TimelinePage() {
 
 function Timeline() {
   const data = useTimeline()
-  return <pre>{JSON.stringify(data, undefined, 2)}</pre>
+  return (
+    <>
+      {data.media.map((media) => (
+        <img
+          key={media.id}
+          src={media.url}
+          alt=""
+          role="presentation"
+          width={800}
+        />
+      ))}
+    </>
+  )
 }
