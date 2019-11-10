@@ -32,11 +32,35 @@ export const handleTimeline: RequestHandler = async (req, res, next) => {
       access_token_secret: accessTokenSecret,
     })
 
-    const { data } = await twitterClient.get("statuses/home_timeline", {
-      exclude_replies: true,
-    })
+    const media: unknown[] = []
+    let cursor: string | undefined = req.params.lastId
 
-    res.send({ data })
+    while (media.length < 20) {
+      const { data } = await twitterClient.get("statuses/home_timeline", {
+        count: 10,
+        exclude_replies: true,
+        max_id: cursor,
+      })
+
+      const tweets = data as any[]
+      if (tweets.length === 0) break
+
+      for (const tweet of tweets) {
+        const originalMedia: any[] = tweet.entities?.media || []
+
+        const extractedMedia = originalMedia.map((media) => ({
+          id: media.id,
+          url: media.media_url_https,
+          tweetUrl: media.expanded_url,
+        }))
+
+        media.push(...extractedMedia)
+      }
+
+      cursor = tweets[tweets.length - 1].id
+    }
+
+    res.send({ data: { media, cursor } })
   } catch (error) {
     next(error)
   }
