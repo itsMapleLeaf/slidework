@@ -1,10 +1,10 @@
 import React, { Suspense } from "react"
-import { useAuthContext } from "../auth/useAuthContext"
+import { useRequiredAuthContext } from "../auth/authContext"
 import { useTimeline } from "../http/useApi"
 import ErrorBoundary from "./ErrorBoundary"
 
 export default function App() {
-  const auth = useAuthContext()
+  const auth = useRequiredAuthContext()
   return (
     <>
       <nav>

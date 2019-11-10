@@ -1,8 +1,8 @@
 import React from "react"
-import { useAuthContext } from "../auth/useAuthContext"
+import { useAnonymousAuthContext } from "../auth/authContext"
 
 export default function AnonymousApp() {
-  const auth = useAuthContext()
+  const auth = useAnonymousAuthContext()
   return (
     <>
       <nav>

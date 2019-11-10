@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react"
-import { useAuthContext } from "../auth/useAuthContext"
+import { useRequiredAuthContext } from "../auth/authContext"
 import FetchResource from "./FetchResource"
 
 export function useTimeline() {
-  const auth = useAuthContext()
-  const token = auth.readToken()
-
   const [resource, setResource] = useState<FetchResource>()
+  const { token } = useRequiredAuthContext()
 
   useEffect(() => {
     if (token) {
