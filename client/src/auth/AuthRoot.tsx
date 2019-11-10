@@ -11,14 +11,10 @@ type Props = {
 
 function AuthRoot({ authResource, protectedContent, publicContent }: Props) {
   const auth = useAuth(authResource)
-  const user = auth.readUser()
-  const token = auth.readToken()
-
-  return user && token ? (
+  return auth.state ? (
     <useRequiredAuthContext.Provider
+      {...auth.state}
       logOut={auth.logOut}
-      user={user}
-      token={token}
       children={protectedContent}
     />
   ) : (

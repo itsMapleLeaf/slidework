@@ -6,12 +6,15 @@ type InitOptions = {
   logIn?: boolean
 }
 
+type AuthResourceState =
+  | { type: "loading" }
+  | { type: "authenticated"; user: AuthUser; token: string }
+  | { type: "anonymous" }
+  | { type: "error"; error: any }
+
 export default class AuthResource {
-  private status: "loading" | "success" | "error" = "loading"
+  private state: AuthResourceState = { type: "loading" }
   private client?: Auth0Client
-  private error?: any
-  private user?: AuthUser
-  private token?: string
   private promise?: Promise<unknown>
 
   constructor(options: InitOptions = {}) {
@@ -22,25 +25,18 @@ export default class AuthResource {
     this.client?.logout()
   }
 
-  readUser = () => {
-    switch (this.status) {
+  readState = () => {
+    switch (this.state.type) {
       case "loading":
         throw this.promise
       case "error":
-        throw this.error
-      case "success":
-        return this.user
-    }
-  }
-
-  readToken = () => {
-    switch (this.status) {
-      case "loading":
-        throw this.promise
-      case "error":
-        throw this.error
-      case "success":
-        return this.token
+        throw this.state.error
+      case "anonymous":
+        return undefined
+      case "authenticated": {
+        const { user, token } = this.state
+        return { user, token }
+      }
     }
   }
 
@@ -57,22 +53,17 @@ export default class AuthResource {
         await this.client.loginWithPopup()
       }
 
-      const isAuthenticated = await this.client.isAuthenticated()
-
-      const [user, token] = isAuthenticated
-        ? await Promise.all([
-            this.client.getUser(),
-            this.client.getTokenSilently(),
-          ])
-        : []
-
-      this.user = user
-      this.token = token
-
-      this.status = "success"
+      if (await this.client.isAuthenticated()) {
+        const [user, token] = await Promise.all([
+          this.client.getUser(),
+          this.client.getTokenSilently(),
+        ])
+        this.state = { type: "authenticated", user, token }
+      } else {
+        this.state = { type: "anonymous" }
+      }
     } catch (error) {
-      this.error = error
-      this.status = "error"
+      this.state = { type: "error", error }
     }
   }
 }
