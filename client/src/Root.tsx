@@ -4,6 +4,7 @@ import LandingPage from "./app/LandingPage"
 import AuthResource from "./auth/AuthResource"
 import AuthRoot from "./auth/AuthRoot"
 import TimelinePage from "./timeline/TimelinePage"
+import GlobalStyle from "./ui/GlobalStyle"
 
 const authErrorMessage = <p>an error occurred, please refresh and try again!</p>
 
@@ -19,6 +20,7 @@ function Root({ authResource }: Props) {
           protectedContent={<TimelinePage />}
         />
       </ErrorBoundary>
+      <GlobalStyle />
     </Suspense>
   )
 }
