@@ -48,11 +48,13 @@ export const handleTimeline: RequestHandler = async (req, res, next) => {
       for (const tweet of tweets) {
         const originalMedia: any[] = tweet.entities?.media || []
 
-        const extractedMedia = originalMedia.map((media) => ({
-          id: media.id,
-          url: media.media_url_https,
-          tweetUrl: media.expanded_url,
-        }))
+        const extractedMedia = originalMedia
+          .filter((media) => media.type === "photo")
+          .map((media) => ({
+            id: media.id,
+            url: media.media_url_https,
+            tweetUrl: media.expanded_url,
+          }))
 
         media.push(...extractedMedia)
       }
