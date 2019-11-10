@@ -2,12 +2,18 @@ import stringify from "fast-json-stable-stringify"
 import Twit from "twit"
 import { Cache } from "./cache"
 
-type TimelineMedia = {
+type ExtractedMedia = {
   media: unknown[]
   lastTweetId?: string
 }
 
-const cache = new Cache<TimelineMedia>()
+const cache = new Cache<ExtractedMedia>()
+
+const extractTweetText = (text: string) =>
+  text
+    .replace(/\s*https:\/\/t\.co\S+\s*/gim, " ")
+    .replace(/rt\s+@[a-z0-9-_]+\:\s*/i, "")
+    .trim()
 
 export class TwitterClient {
   private client: Twit
@@ -16,9 +22,18 @@ export class TwitterClient {
     this.client = new Twit(clientOptions)
   }
 
-  private async extractMediaFromTimeline(
-    lastTweetId?: string,
-  ): Promise<TimelineMedia> {
+  async getTimelineMedia(lastTweetId?: string) {
+    const key = stringify({ lastTweetId, options: this.clientOptions })
+    const cachedData = cache.get(key)
+    if (cachedData) return cachedData
+
+    const tweets = await this.getTimelineTweets(lastTweetId)
+    const data = await this.extractMediaFromTweets(tweets)
+    cache.add(key, data)
+    return data
+  }
+
+  private async getTimelineTweets(lastTweetId?: string) {
     const { data } = await this.client.get("statuses/home_timeline", {
       count: 200,
       max_id: lastTweetId,
@@ -27,7 +42,10 @@ export class TwitterClient {
 
     // if we include max_id, the last tweet from the previous batch is returned,
     // so we wanna exclude that
-    const tweets = (data as any[]).slice(lastTweetId ? 1 : 0)
+    return (data as any[]).slice(lastTweetId ? 1 : 0)
+  }
+
+  private async extractMediaFromTweets(tweets: any[]): Promise<ExtractedMedia> {
     if (tweets.length === 0) {
       return { media: [] }
     }
@@ -46,7 +64,7 @@ export class TwitterClient {
           url: media.media_url_https,
           tweet: {
             url: media.expanded_url,
-            content: tweet.text || "",
+            content: extractTweetText(tweet.text || ""),
             date: tweet.created_at,
           },
           user: {
@@ -60,15 +78,5 @@ export class TwitterClient {
     }
 
     return { media, lastTweetId: tweets[tweets.length - 1]?.id }
-  }
-
-  async getMedia(lastTweetId?: string) {
-    const key = stringify({ lastTweetId, options: this.clientOptions })
-    const cachedData = cache.get(key)
-    if (cachedData) return cachedData
-
-    const data = await this.extractMediaFromTimeline(lastTweetId)
-    cache.add(key, data)
-    return data
   }
 }

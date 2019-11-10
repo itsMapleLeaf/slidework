@@ -32,7 +32,7 @@ export const handleTimeline: RequestHandler = async (req, res, next) => {
       access_token_secret: accessTokenSecret,
     })
 
-    const result = await twitterClient.getMedia(req.query.cursor)
+    const result = await twitterClient.getTimelineMedia(req.query.cursor)
     res.send({ data: { media: result.media, cursor: result.lastTweetId } })
   } catch (error) {
     next(error)
