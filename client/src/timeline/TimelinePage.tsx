@@ -2,6 +2,7 @@ import React, { Suspense, useCallback, useRef, useState } from "react"
 import ErrorBoundary from "../app/ErrorBoundary"
 import { useRequiredAuthContext } from "../auth/authContext"
 import clamp from "../common/clamp"
+import lerp from "../common/lerp"
 import useWindowEvent from "../dom/useWindowEvent"
 import { styled } from "../ui/styled"
 import Timeline from "./Timeline"
@@ -20,15 +21,26 @@ export default function TimelinePage() {
 
   const updateFocusedId = useCallback(() => {
     const images = getImages()
-    const focalPoint = window.innerHeight / 2 + window.scrollY
+
+    // it's possible for the first image on the page to be too short to actually overlap with the screen center,
+    // so we'll do some math to make it so that the focal point is closer to the top as you scroll down,
+    // so that the first image will be selected if you're closer to the top
+    //
+    // using a simple `if (scroll < someNumber) { useFirstImage }` is error prone if the first image is really _tall_,
+    // then we won't be able to focus the second image (or the focus area will be annoyingly narrow)
+    //
+    // the exponent gives us some acceleration,
+    // to make it so the focal point moves to the center "more quickly" as we scroll
+    const windowVerticalCenter = window.innerHeight / 2 + window.scrollY
+    const deltaToCenter = clamp(window.scrollY / (window.innerHeight / 2), 0, 1)
+    const focalPoint = lerp(0, windowVerticalCenter, (1 - deltaToCenter) ** 3)
 
     const isScrolledOn = (image: Element) =>
       image instanceof HTMLElement &&
       focalPoint > image.offsetTop &&
       focalPoint <= image.offsetTop + image.clientHeight + 16 // make the areas overlap so we always have an image selected
 
-    const focusedElement =
-      window.scrollY < 50 ? images[0] : images.find(isScrolledOn) || images[0]
+    const focusedElement = images.find(isScrolledOn) || images[0]
 
     setFocusedId(getIdFromElement(focusedElement))
   }, [])
