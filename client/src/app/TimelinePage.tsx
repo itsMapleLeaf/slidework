@@ -5,6 +5,7 @@ import ErrorBoundary from "./ErrorBoundary"
 
 export default function TimelinePage() {
   const auth = useRequiredAuthContext()
+
   return (
     <>
       <nav>
@@ -24,6 +25,7 @@ export default function TimelinePage() {
 function Timeline({ cursor }: { cursor?: number }) {
   const data = useTimeline(cursor)
   const [renderNext, setRenderNext] = useState(false)
+
   return (
     <>
       <section>
@@ -37,6 +39,7 @@ function Timeline({ cursor }: { cursor?: number }) {
           />
         ))}
       </section>
+
       {renderNext ? (
         <Suspense fallback={<p>loading next page...</p>}>
           <ErrorBoundary placeholder={<p>failed to load page :(</p>}>
