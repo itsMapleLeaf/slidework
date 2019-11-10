@@ -4,8 +4,10 @@ import React, { Suspense } from "react"
 import ReactDOM from "react-dom"
 import { BrowserRouter } from "react-router-dom"
 import ErrorBoundary from "./app/ErrorBoundary"
+import LandingPage from "./app/LandingPage"
+import TimelinePage from "./app/TimelinePage"
 import AuthResource from "./auth/AuthResource"
-import Root from "./Root"
+import AuthRoot from "./auth/AuthRoot"
 
 const authResource = new AuthResource()
 
@@ -15,7 +17,11 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <BrowserRouter>
     <Suspense fallback={<p>loading...</p>}>
       <ErrorBoundary placeholder={authErrorMessage}>
-        <Root authResource={authResource} />
+        <AuthRoot
+          authResource={authResource}
+          publicContent={<LandingPage />}
+          protectedContent={<TimelinePage />}
+        />
       </ErrorBoundary>
     </Suspense>
   </BrowserRouter>,

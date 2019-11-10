@@ -3,7 +3,7 @@ import { useRequiredAuthContext } from "../auth/authContext"
 import { useTimeline } from "../http/useApi"
 import ErrorBoundary from "./ErrorBoundary"
 
-export default function App() {
+export default function TimelinePage() {
   const auth = useRequiredAuthContext()
   return (
     <>

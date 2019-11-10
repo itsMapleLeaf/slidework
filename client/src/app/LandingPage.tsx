@@ -1,7 +1,7 @@
 import React from "react"
 import { useAnonymousAuthContext } from "../auth/authContext"
 
-export default function AnonymousApp() {
+export default function LandingPage() {
   const auth = useAnonymousAuthContext()
   return (
     <>
