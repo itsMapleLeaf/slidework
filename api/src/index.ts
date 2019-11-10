@@ -11,4 +11,6 @@ const app = express()
 app.get("/api/timeline", checkJwt, handleTimeline)
 app.use(express.static(path.join(__dirname, `../../client/build`)))
 app.use(handleError)
-app.listen(process.env.PORT || 3001, () => console.log("API listening on 3001"))
+
+const port = process.env.PORT || 3001
+app.listen(port, () => console.log(`API listening on ${port}`))
