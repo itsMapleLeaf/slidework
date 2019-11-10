@@ -50,7 +50,13 @@ export default class AuthResource {
       })
 
       if (options.logIn) {
-        await this.client.loginWithPopup()
+        await this.client.loginWithRedirect()
+      }
+
+      const params = new URLSearchParams(window.location.search)
+      if (params.has("code")) {
+        await this.client.handleRedirectCallback()
+        window.history.replaceState({}, document.title, "/")
       }
 
       if (await this.client.isAuthenticated()) {
