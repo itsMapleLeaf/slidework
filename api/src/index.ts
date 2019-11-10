@@ -1,3 +1,5 @@
+import compression from "compression"
+import cors from "cors"
 import dotenv from "dotenv"
 import express from "express"
 import path from "path"
@@ -8,6 +10,8 @@ import { handleTimeline } from "./handle-timeline"
 dotenv.config({ path: path.join(__dirname, `../.env.local`) })
 
 const app = express()
+app.use(cors())
+app.use(compression())
 app.get("/api/timeline", checkJwt, handleTimeline)
 app.use(express.static(path.join(__dirname, `../../client/build`)))
 app.use(handleError)
