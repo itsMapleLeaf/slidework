@@ -4,20 +4,21 @@ import AuthResource from "./AuthResource"
 
 function useAuth({ resource: initialResource }: { resource: AuthResource }) {
   const [resource, setResource] = useState(initialResource)
-  const [startTransition] = useTransition()
+  const [startTransition, isPending] = useTransition()
 
   return useMemo(
     () => ({
-      readUser: () => resource.readUser(),
-      readToken: () => resource.readToken(),
+      readUser: resource.readUser,
+      readToken: resource.readToken,
+      isPending,
+      logOut: resource.logOut,
       logIn: () => {
         startTransition(() => {
           setResource(new AuthResource({ logIn: true }))
         })
       },
-      logOut: () => resource.logOut(),
     }),
-    [resource, startTransition],
+    [isPending, resource, startTransition],
   )
 }
 
