@@ -37,7 +37,7 @@ export const handleTimeline: RequestHandler = async (req, res, next) => {
 
     while (media.length < 20) {
       const { data } = await twitterClient.get("statuses/home_timeline", {
-        count: 10,
+        count: 100,
         exclude_replies: true,
         max_id: cursor,
       })
