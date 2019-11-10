@@ -6,7 +6,10 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "wsrun dev"
+    "dev": "wsrun dev",
+    "build": "wsrun --exclude-missing build",
+    "start": "wsrun start",
+    "heroku-postbuild": "yarn build"
   },
   "workspaces": [
     "api",
