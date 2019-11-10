@@ -1,6 +1,6 @@
 import React, { Suspense, useState } from "react"
 import { useRequiredAuthContext } from "../auth/authContext"
-import { useTimeline } from "../http/useApi"
+import { useTimeline } from "../http/useTimeline"
 import ErrorBoundary from "./ErrorBoundary"
 
 export default function TimelinePage() {
