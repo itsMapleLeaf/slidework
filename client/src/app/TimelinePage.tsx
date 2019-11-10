@@ -1,4 +1,4 @@
-import React, { Suspense } from "react"
+import React, { Suspense, useState } from "react"
 import { useRequiredAuthContext } from "../auth/authContext"
 import { useTimeline } from "../http/useApi"
 import ErrorBoundary from "./ErrorBoundary"
@@ -21,19 +21,31 @@ export default function TimelinePage() {
   )
 }
 
-function Timeline() {
-  const data = useTimeline()
+function Timeline({ cursor }: { cursor?: number }) {
+  const data = useTimeline(cursor)
+  const [renderNext, setRenderNext] = useState(false)
   return (
     <>
-      {data.media.map((media) => (
-        <img
-          key={media.id}
-          src={media.url}
-          alt=""
-          role="presentation"
-          width={800}
-        />
-      ))}
+      <section>
+        {data.media.map((media) => (
+          <img
+            key={media.id}
+            src={media.url}
+            alt=""
+            role="presentation"
+            width={100}
+          />
+        ))}
+      </section>
+      {renderNext ? (
+        <Suspense fallback={<p>loading next page...</p>}>
+          <ErrorBoundary placeholder={<p>failed to load page :(</p>}>
+            <Timeline cursor={data.cursor} />
+          </ErrorBoundary>
+        </Suspense>
+      ) : data.cursor ? (
+        <button onClick={() => setRenderNext(true)}>load more</button>
+      ) : null}
     </>
   )
 }

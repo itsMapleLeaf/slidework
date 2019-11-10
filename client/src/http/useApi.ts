@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { useRequiredAuthContext } from "../auth/authContext"
 import FetchResource from "./FetchResource"
 
 type TimelineApiResponse = {
   data: {
     media: TimelineImage[]
-    cursor?: string
+    cursor?: number
   }
 }
 
@@ -15,8 +15,9 @@ type TimelineImage = {
   tweetUrl: string
 }
 
-export function useTimeline() {
+export function useTimeline(cursor?: number) {
   const [resource, setResource] = useState<FetchResource<TimelineApiResponse>>()
+  const [startTransition] = useTransition()
   const { token } = useRequiredAuthContext()
 
   useEffect(() => {
@@ -24,9 +25,14 @@ export function useTimeline() {
       const options = {
         headers: { Authorization: `Bearer ${token}` },
       }
-      setResource(new FetchResource(`/api/timeline`, options))
+
+      const params = cursor ? `?cursor=${cursor}` : ``
+
+      startTransition(() => {
+        setResource(new FetchResource(`/api/timeline${params}`, options))
+      })
     }
-  }, [token])
+  }, [cursor, startTransition, token])
 
   return resource ? resource.read().data : { media: [] }
 }
