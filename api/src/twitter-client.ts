@@ -21,12 +21,13 @@ export class TwitterClient {
   ): Promise<TimelineMedia> {
     const { data } = await this.client.get("statuses/home_timeline", {
       count: 200,
-      exclude_replies: true,
       max_id: lastTweetId,
+      exclude_replies: true,
     })
 
-    const tweets = data as any[]
-    console.log(tweets.slice(10).map((tweet) => tweet.entities?.media))
+    // if we include max_id, the last tweet from the previous batch is returned,
+    // so we wanna exclude that
+    const tweets = (data as any[]).slice(lastTweetId ? 1 : 0)
     if (tweets.length === 0) {
       return { media: [] }
     }
@@ -49,7 +50,7 @@ export class TwitterClient {
       media.push(...extractedMedia)
     }
 
-    return { media, lastTweetId: tweets[tweets.length - 1].id }
+    return { media, lastTweetId: tweets[tweets.length - 1]?.id }
   }
 
   async getMedia(lastTweetId?: string) {
