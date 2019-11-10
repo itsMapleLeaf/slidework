@@ -1,8 +1,8 @@
 import { ManagementClient } from "auth0"
 import { RequestHandler } from "express"
-import { TwitterClient } from "./twitter-client"
 import env from "./env"
 import { HttpError } from "./http-error"
+import { TwitterClient } from "./twitter-client"
 
 const authClient = new ManagementClient({
   clientId: env.auth0.clientId,
@@ -32,16 +32,8 @@ export const handleTimeline: RequestHandler = async (req, res, next) => {
       access_token_secret: accessTokenSecret,
     })
 
-    const media: unknown[] = []
-    let lastTweetId = req.params.cursor as string | undefined
-
-    while (media.length < 20) {
-      const result = await twitterClient.getMedia(lastTweetId)
-      media.push(...result.media)
-      lastTweetId = result.lastTweetId
-    }
-
-    res.send({ data: { media, cursor: lastTweetId } })
+    const result = await twitterClient.getMedia(req.query.cursor)
+    res.send({ data: { media: result.media, cursor: result.lastTweetId } })
   } catch (error) {
     next(error)
   }
