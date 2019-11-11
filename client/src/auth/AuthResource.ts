@@ -30,7 +30,9 @@ export default class AuthResource {
   }
 
   logOut = () => {
-    this.client?.logout()
+    this.client?.logout({
+      returnTo: window.location.origin,
+    })
   }
 
   read = () => {
